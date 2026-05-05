@@ -1,4 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
+using RecordShopBackEnd.Data;
+using System;
+
 namespace RecordShopBackEnd
 {
     public class Program
@@ -7,12 +11,29 @@ namespace RecordShopBackEnd
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Checks to is if env is dev or prod. If dev it will use json?
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddDbContext<AppDbContext>(options =>
+                    options.UseInMemoryDatabase(
+                        builder.Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else
+            {
+                builder.Services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(
+                        builder.Configuration.GetConnectionString("DefaultConnection")));
+            }
+
             // Add services to the container.
             builder.Services.AddAuthorization();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddControllers();
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -24,28 +45,10 @@ namespace RecordShopBackEnd
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
+            app.MapControllers(); // tells the code to look for controller classes. 
 
-            var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
-            app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                    new WeatherForecast
-                    {
-                        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                        TemperatureC = Random.Shared.Next(-20, 55),
-                        Summary = summaries[Random.Shared.Next(summaries.Length)]
-                    })
-                    .ToArray();
-                return forecast;
-            })
-            .WithName("GetWeatherForecast")
-            .WithOpenApi();
+            
 
             app.Run();
         }

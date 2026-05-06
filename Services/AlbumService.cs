@@ -1,9 +1,16 @@
 ﻿using RecordShopBackEnd.Models;
+using static RecordShopBackEnd.Repositories.AlbumRepository;
 
 namespace RecordShopBackEnd.Services
 {
     public class AlbumService: IAlbumService
     {
+        private readonly IAlbumRepository _albumRepository; 
+
+        public AlbumService(IAlbumRepository albumRepository)
+        {
+            _albumRepository = albumRepository;
+        }
         public List<Album> GetAlbums() 
         {  
             return new List<Album>(); 

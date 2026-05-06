@@ -1,7 +1,11 @@
 
 using Microsoft.EntityFrameworkCore;
 using RecordShopBackEnd.Data;
+using RecordShopBackEnd.Repositories;
+using RecordShopBackEnd.Services;
+
 using System;
+using static RecordShopBackEnd.Repositories.AlbumRepository;
 
 namespace RecordShopBackEnd
 {
@@ -34,6 +38,9 @@ namespace RecordShopBackEnd
 
             builder.Services.AddControllers();
             builder.Services.AddAuthorization();
+
+            builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+            builder.Services.AddScoped<IAlbumService, AlbumService>();
 
             var app = builder.Build();
 

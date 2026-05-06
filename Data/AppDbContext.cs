@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RecordShopBackEnd.Models;
 
 namespace RecordShopBackEnd.Data
 {
@@ -8,5 +9,7 @@ namespace RecordShopBackEnd.Data
             : base(options)
         {
         }
+
+        public DbSet<Album> Albums { get; set; }
     }
 }
